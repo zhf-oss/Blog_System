@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhf.dao.CommentDao">
+
+	<resultMap type="Comment" id="CommentResult">
+		<result property="id" column="id"/>
+		<result property="content" column="content"/>
+		<result property="ip" column="ip"/>
+		<result property="date" column="date" jdbcType="DATE"/>
+		<result property="state" column="state"/>
+	</resultMap>
+
+	<resultMap type="Comment" id="CommentResult2">
+		<result property="id" column="id"/>
+		<result property="content" column="content"/>
+		<result property="ip" column="ip"/>
+		<result property="blogId" column="blogId" />
+		<result property="date" column="date" jdbcType="DATE"/>
+		<result property="state" column="state"/>
+
+		<association property="blog" column="blogId" select="com.zhf.dao.BlogDao.findById"></association>
+	</resultMap>
+
+	<select id="list" parameterType="Map" resultMap="CommentResult">
+		select * from t_comment order by date desc
+	</select>
+
+	<select id="commentList" parameterType="Map" resultMap="CommentResult2">
+		select * from t_comment
+		<if test="start!=null and size!=null">
+			limit #{start},#{size}
+		</if>
+	</select>
+
+	<insert id="add" parameterType="Comment">
+		insert into t_comment values (null,#{content},#{ip},#{blogId},now(),0)
+	</insert>
+
+	<delete id="delete" parameterType="Integer">
+		delete from t_comment where id=#{id}
+	</delete>
+
+	<update id="update" parameterType="Integer">
+		update t_comment set state=1 where id=#{id}
+	</update>
+
+</mapper> 
